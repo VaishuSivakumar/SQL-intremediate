@@ -11,3 +11,27 @@ DELETE FROM CARS
 WHERE MODEL_ID IN (
                    SELECT MODEL_ID FROM DUPLICATES 
                    WHERE RN>1);
+
+--2.Highest and Lowest salary
+
+
+WITH HIGH_SAL AS (
+  SELECT *,
+         DENSE_RANK() OVER (
+           PARTITION BY dept 
+           ORDER BY salary DESC
+         ) AS dn1
+  FROM employee
+),
+LOW_SAL AS (
+  SELECT *,
+         DENSE_RANK() OVER (
+           PARTITION BY dept 
+           ORDER BY salary ASC
+         ) AS dn2
+  FROM employee
+)
+SELECT * FROM HIGH_SAL WHERE dn1 = 1
+UNION
+SELECT * FROM LOW_SAL WHERE dn2 = 1;
+
